@@ -1,0 +1,18 @@
+<div class="material-list-container">
+  <mat-card class="material-card">
+    <div class="material-list-header">
+      <div>
+        <h1 class="title">Gestión de Materiales</h1>
+        <p class="subtitle">Visualiza, filtra y gestiona los materiales registrados.</p>
+      </div>
+      <button mat-raised-button color="primary" (click)="openRegisterDialog()" disabled="">
+        <mat-icon>add</mat-icon>
+        Registrar Material
+      </button>
+    </div>
+
+    <mat-card-content>
+      <app-material-table [materials]="dataSource.data"></app-material-table>
+    </mat-card-content>
+  </mat-card>
+</div>

@@ -1,0 +1,42 @@
+<h1 mat-dialog-title>Registrar Material</h1>
+<div mat-dialog-content>
+  <form [formGroup]="materialForm">
+    <mat-form-field appearance="fill" class="full-width">
+      <mat-label>Nombre</mat-label>
+      <input matInput formControlName="name" placeholder="Material" />
+    </mat-form-field>
+
+    <mat-form-field appearance="fill" class="full-width">
+      <mat-label>Tipo</mat-label>
+      <input matInput formControlName="type"  placeholder="Tipo"/>
+    </mat-form-field>
+
+    <mat-form-field appearance="fill" class="full-width">
+      <mat-label>Ciudad</mat-label>
+      <mat-select formControlName="cityId">
+        <mat-option *ngFor="let city of data.cities" [value]="city.id" >
+          {{ city.name }}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <mat-form-field appearance="fill" class="full-width">
+      <mat-label>Fecha de compra</mat-label>
+      <input matInput [matDatepicker]="picker1" formControlName="purchaseDate" placeholder="Fecha de compra"/>
+      <mat-datepicker-toggle matSuffix [for]="picker1"></mat-datepicker-toggle>
+      <mat-datepicker #picker1></mat-datepicker>
+    </mat-form-field>
+
+    <mat-form-field appearance="fill" class="full-width">
+      <mat-label>Fecha de venta</mat-label>
+      <input matInput [matDatepicker]="picker2" formControlName="saleDate" placeholder="Fecha de venta"/>
+      <mat-datepicker-toggle matSuffix [for]="picker2"></mat-datepicker-toggle>
+      <mat-datepicker #picker2></mat-datepicker>
+    </mat-form-field>
+  </form>
+</div>
+
+<div mat-dialog-actions align="end">
+  <button mat-button (click)="onCancel()">Cancelar</button>
+  <button mat-flat-button color="primary" [disabled]="!materialForm.valid" (click)="onSubmit()">Guardar</button>
+</div>

@@ -35,7 +35,7 @@ export class LoginComponent {
         next: () => {
           this.loginForm.reset();
 
-          this.router.navigate(['/auth/register']);
+          this.router.navigate(['/materials']);
           Swal.fire({
             icon: 'success',
             title: 'Inicio de sesión exitoso',
@@ -44,10 +44,13 @@ export class LoginComponent {
           });
         },
         error: (error: HttpErrorResponse) => {
+          console.error('Error en el login', error);
           Swal.fire({
             icon: 'error',
-            title: 'Error de inicio de sesión',
-            text: error?.error?.error || 'Correo o contraseña incorrectos',
+            title: 'Error al iniciar sesión',
+            text:
+              error?.error?.message ||
+              'Ocurrió un error inesperado. Intenta nuevamente.',
           });
         },
       });
