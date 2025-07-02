@@ -4,7 +4,7 @@ import { MatPaginator } from '@angular/material/paginator';
 import { MatTableDataSource } from '@angular/material/table';
 import { MaterialResponse } from 'src/app/core/models/materials/material-response.model';
 import { MaterialService } from 'src/app/core/services/material.service';
-import { MatDialog } from '@angular/material/dialog';
+import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { MaterialFormDialogComponent } from '../../components/material-form-dialog/material-form-dialog.component';
 import Swal from 'sweetalert2';
 
@@ -43,9 +43,9 @@ export class MaterialListComponent implements OnInit {
         this.dataSource.paginator = this.paginator;
       },
       error: (error: HttpErrorResponse) => {
-        console.log(error?.error?.error || 'Correo o contraseña incorrectos');
+        console.log(error?.message || 'Correo o contraseña incorrectos');
       },
-    });
+    }); 
   }
 
   applyFilters(filters: any): void {
@@ -77,14 +77,25 @@ export class MaterialListComponent implements OnInit {
       width: '500px',
       data: {
         cities: [],
+        titleFormDialog: 'Registrar Material',
+        confirmationButtonText: 'Guardar',
       },
     });
 
-    dialogRef.afterClosed().subscribe((result) => {
-      if (result) {
-        this.loadMaterials();
-      }
+    this.reloadMaterials(dialogRef);
+  }
+
+  openUpdateDialog(material: MaterialResponse): void {
+    const dialogRef = this.dialog.open(MaterialFormDialogComponent, {
+      width: '500px',
+      data: {
+        material,
+        titleFormDialog: 'Actualizar Material',
+        confirmationButtonText: 'Actualizar',
+      },
     });
+
+    this.reloadMaterials(dialogRef);
   }
 
   confirmDeleteMaterial(id: number): void {
@@ -108,6 +119,16 @@ export class MaterialListComponent implements OnInit {
             Swal.fire('Error', error?.message, 'error');
           },
         });
+      }
+    });
+  }
+
+  private reloadMaterials(
+    dialogRef: MatDialogRef<MaterialFormDialogComponent, any>
+  ): void {
+    dialogRef.afterClosed().subscribe((result) => {
+      if (result) {
+        this.loadMaterials();
       }
     });
   }

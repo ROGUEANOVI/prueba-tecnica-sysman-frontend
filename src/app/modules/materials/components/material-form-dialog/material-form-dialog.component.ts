@@ -7,6 +7,7 @@ import { Department } from 'src/app/core/models/location/department.model';
 import { type City } from 'src/app/core/models/materials/city.model';
 import { type MaterialRequest, Status } from 'src/app/core/models/materials/material-request.model';
 import Swal from 'sweetalert2';
+import { HttpErrorResponse } from '@angular/common/http';
 
 @Component({
   selector: 'app-material-form-dialog',
@@ -15,6 +16,10 @@ import Swal from 'sweetalert2';
 })
 export class MaterialFormDialogComponent implements OnInit {
   materialForm: FormGroup;
+
+  titleFormDialog: string = '';
+
+  confirmationButtonText: string = '';
 
   departments: Department[] = [];
 
@@ -47,6 +52,32 @@ export class MaterialFormDialogComponent implements OnInit {
 
   ngOnInit(): void {
     this.loadDepartments();
+
+    const updateMaterial = this.data?.material;
+
+    this.titleFormDialog = updateMaterial ? 'Actualizar Material' : 'Registrar Material';
+    this.confirmationButtonText = updateMaterial ? 'Actualizar' : 'Registrar';
+
+    if (updateMaterial) {
+      this.materialForm.patchValue({
+        name: updateMaterial.name,
+        description: updateMaterial.description,
+        type: updateMaterial.type,
+        price: updateMaterial.price,
+        purchaseDate: new Date(updateMaterial.purchaseDate),
+        saleDate: updateMaterial.saleDate ? new Date(updateMaterial.saleDate) : null,
+        status: updateMaterial.status,
+        departmentCode: updateMaterial.city.department.code,
+        cityCode: updateMaterial.city.code,
+      });
+
+      const departmentCode = updateMaterial.city.department.code;
+
+      this.locationService.getAllCities(departmentCode).subscribe((cities) => {
+        this.cities = cities;
+      });
+
+    }
   }
 
   loadDepartments(): void {
@@ -67,10 +98,7 @@ export class MaterialFormDialogComponent implements OnInit {
   }
 
   onSubmit(): void {
-    if (this.materialForm.invalid) {
-      this.materialForm.markAllAsTouched();
-      return;
-    }
+    if (this.materialForm.invalid) return;
 
     const formValue = this.materialForm.value;
 
@@ -85,19 +113,52 @@ export class MaterialFormDialogComponent implements OnInit {
       cityCode: formValue.cityCode,
     };
 
-    this.materialService.createMaterial(request).subscribe({
-      next: (material) => {
-        this.dialogRef.close(material);
+    if (this.data?.material.id) {
+      request.id = this.data.material.id;
 
-        Swal.fire({
-          icon: 'success',
-          title: 'Material creado correctamente',
-          confirmButtonText: 'OK',
-        });
+      this.materialService.updateMaterial(this.data.material.id, request).subscribe({
+        next: (material) => {
+          this.dialogRef.close(material);
 
-      },
-      error: (err) => console.error(err),
-    });
+          Swal.fire({
+            icon: 'success',
+            title: 'Material actualizado correctamente',
+            confirmButtonText: 'OK',
+          });
+
+        },
+        error: (err: HttpErrorResponse) => {
+          console.error(err);
+          Swal.fire({
+            icon: 'error',
+            title: 'Error al actualizar el material',
+            text: err?.message || 'Ocurrio un error inesperado',
+          })
+        },
+      })
+    }
+    else {
+      this.materialService.createMaterial(request).subscribe({
+        next: (material) => {
+          this.dialogRef.close(material);
+
+          Swal.fire({
+            icon: 'success',
+            title: 'Material creado correctamente',
+            confirmButtonText: 'OK',
+          });
+        },
+        error: (err: HttpErrorResponse) => {
+          console.error(err);
+          Swal.fire({
+            icon: 'error',
+            title: 'Error al actualizar el material',
+            text: err?.message || 'Ocurrio un error inesperado',
+          });
+        },
+      });
+    }
+
   }
 
   onCancel(): void {

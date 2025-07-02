@@ -15,6 +15,8 @@ export class MaterialTableComponent {
 
   @Output() onDelete = new EventEmitter<number>();
 
+  @Output() onEdit = new EventEmitter<MaterialResponse>();
+
   displayedColumns: string[] = [
     'id',
     'name',
@@ -39,6 +41,10 @@ export class MaterialTableComponent {
       .trim()
       .toLowerCase();
     this.dataSource.filter = filterValue;
+  }
+
+  editMaterial(element: MaterialResponse) {
+    this.onEdit.emit(element);
   }
 
   deleteMaterial(id: number) {

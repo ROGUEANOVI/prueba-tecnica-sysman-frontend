@@ -37,7 +37,7 @@ export class MaterialService {
     return this.http.post<MaterialResponse>(`${this.apiUrl}`, material);
   }
 
-  updateMaterial(material: MaterialRequest, materialId: number): Observable<MaterialResponse> {
+  updateMaterial(materialId: number, material: MaterialRequest): Observable<MaterialResponse> {
     return this.http.put<MaterialResponse>(`${this.apiUrl}/${materialId}`, material);
   }
 
