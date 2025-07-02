@@ -11,7 +11,6 @@
         mat-raised-button
         color="primary"
         (click)="openRegisterDialog()"
-        disabled=""
       >
         <mat-icon>add</mat-icon>
         Registrar Material
@@ -23,7 +22,7 @@
         (filtersChanged)="onFiltersChanged($event)"
         (filtersCleared)="onFiltersCleared()"
       ></app-material-filters>
-      <app-material-table [materials]="dataSource.data"></app-material-table>
+      <app-material-table [materials]="dataSource.data" (onDelete)="confirmDeleteMaterial($event)"></app-material-table>
     </mat-card-content>
   </mat-card>
 </div>

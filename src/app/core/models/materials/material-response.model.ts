@@ -3,10 +3,13 @@ import { City } from "./city.model";
 export interface MaterialResponse {
   id: number;
   name: string;
+  description: string;
   type: string;
-  quantity: number;
-  purchaseDate: string; // formato ISO yyyy-MM-dd
+  price: number;
+  purchaseDate: string;
   saleDate?: string | null;
+  status: string;
   city: City;
 }
+
 

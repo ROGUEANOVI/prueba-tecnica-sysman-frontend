@@ -6,6 +6,7 @@ import { MaterialResponse } from 'src/app/core/models/materials/material-respons
 import { MaterialService } from 'src/app/core/services/material.service';
 import { MatDialog } from '@angular/material/dialog';
 import { MaterialFormDialogComponent } from '../../components/material-form-dialog/material-form-dialog.component';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-material-list',
@@ -72,11 +73,42 @@ export class MaterialListComponent implements OnInit {
   }
 
   openRegisterDialog(): void {
-    this.dialog.open(MaterialFormDialogComponent, {
+    const dialogRef = this.dialog.open(MaterialFormDialogComponent, {
       width: '500px',
       data: {
         cities: [],
       },
+    });
+
+    dialogRef.afterClosed().subscribe((result) => {
+      if (result) {
+        this.loadMaterials();
+      }
+    });
+  }
+
+  confirmDeleteMaterial(id: number): void {
+    Swal.fire({
+      title: '¿Estás seguro?',
+      text: 'Esta acción eliminará el material de forma permanente.',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#d33',
+      cancelButtonColor: '#3085d6',
+      confirmButtonText: 'Sí, eliminar',
+      cancelButtonText: 'Cancelar',
+    }).then((result) => {
+      if (result.isConfirmed) {
+        this.materialService.deleteMaterial(id).subscribe({
+          next: () => {
+            Swal.fire('Eliminado', 'El material ha sido eliminado.', 'success');
+            this.loadMaterials();
+          },
+          error: (error: HttpErrorResponse) => {
+            Swal.fire('Error', error?.message, 'error');
+          },
+        });
+      }
     });
   }
 }
