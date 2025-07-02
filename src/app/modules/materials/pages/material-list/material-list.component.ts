@@ -1,5 +1,5 @@
 import { HttpErrorResponse } from '@angular/common/http';
-import { Component, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatTableDataSource } from '@angular/material/table';
 import { MaterialResponse } from 'src/app/core/models/materials/material-response.model';
@@ -12,7 +12,7 @@ import { MaterialFormDialogComponent } from '../../components/material-form-dial
   templateUrl: './material-list.component.html',
   styleUrls: ['./material-list.component.scss'],
 })
-export class MaterialListComponent {
+export class MaterialListComponent implements OnInit {
   displayedColumns: string[] = [
     'name',
     'type',
@@ -21,18 +21,22 @@ export class MaterialListComponent {
     'city',
     'actions',
   ];
+
   dataSource: MatTableDataSource<MaterialResponse> = new MatTableDataSource();
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
 
-  constructor(private materialService: MaterialService, private dialog: MatDialog) {}
+  constructor(
+    private materialService: MaterialService,
+    private dialog: MatDialog
+  ) {}
 
   ngOnInit(): void {
     this.loadMaterials();
   }
 
   loadMaterials(): void {
-    this.materialService.getMaterials().subscribe({
+    this.materialService.searchMaterials().subscribe({
       next: (materials) => {
         this.dataSource = new MatTableDataSource(materials);
         this.dataSource.paginator = this.paginator;
@@ -43,18 +47,35 @@ export class MaterialListComponent {
     });
   }
 
-  applyFilter(event: Event): void {
-    const filterValue = (event.target as HTMLInputElement).value
-      .trim()
-      .toLowerCase();
-    this.dataSource.filter = filterValue;
+  applyFilters(filters: any): void {
+    const { cityCode, type, purchaseDate } = filters;
+    const dateString = purchaseDate
+      ? new Date(purchaseDate).toISOString().split('T')[0]
+      : undefined;
+
+    this.materialService.searchMaterials(type, cityCode, dateString).subscribe({
+      next: (materials) => {
+        console.log('materials', materials);
+        this.dataSource.data = materials;
+        this.dataSource.paginator = this.paginator;
+      },
+      error: (err) => console.error(err),
+    });
+  }
+
+  onFiltersChanged(filters: any): void {
+    this.applyFilters(filters);
+  }
+
+  onFiltersCleared(): void {
+    this.loadMaterials();
   }
 
   openRegisterDialog(): void {
     this.dialog.open(MaterialFormDialogComponent, {
       width: '500px',
       data: {
-        cities: [], // aquí puedes pasar las ciudades desde el backend más adelante
+        cities: [],
       },
     });
   }

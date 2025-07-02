@@ -39,21 +39,3 @@
     height: 40px;
   }
 }
-
-
-.actions {
-  display: flex;
-  justify-content: flex-end;
-  margin: 1rem 0;
-
-  button {
-    font-weight: 500;
-    gap: 0.5rem;
-    display: flex;
-    align-items: center;
-  }
-}
-
-::ng-deep .mat-form-field-appearance-outline .mat-form-field-outline {
-  border-radius: 10px;
-}

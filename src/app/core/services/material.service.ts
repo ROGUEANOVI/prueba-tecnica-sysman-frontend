@@ -8,25 +8,23 @@ import { MaterialResponse } from '../models/materials/material-response.model';
   providedIn: 'root',
 })
 export class MaterialService {
-
   private apiUrl = `${environment.apiBaseUrl}/materials`;
 
   constructor(private http: HttpClient) {}
 
-  getMaterials(filters?: {
-    type?: string;
-    cityCode?: string;
-    purchaseDate?: string;
-  }): Observable<MaterialResponse[]> {
+  searchMaterials(
+    type?: string,
+    cityCode?: string,
+    purchaseDate?: string
+  ): Observable<MaterialResponse[]> {
+
     let params = new HttpParams();
+    if (type) params = params.set('type', type);
+    if (cityCode) params = params.set('cityCode', cityCode);
+    if (purchaseDate) params = params.set('purchaseDate', purchaseDate);
 
-    if (filters) {
-      if (filters.type) params = params.set('type', filters.type);
-      if (filters.cityCode) params = params.set('city', filters.cityCode);
-      if (filters.purchaseDate)
-        params = params.set('purchaseDate', filters.purchaseDate);
-    }
-
-    return this.http.get<MaterialResponse[]>(this.apiUrl, { params, withCredentials: true  });
+    return this.http.get<MaterialResponse[]>(`${this.apiUrl}`, {
+      params,
+    });
   }
 }

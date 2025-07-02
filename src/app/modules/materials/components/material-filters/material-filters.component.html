@@ -1,0 +1,36 @@
+<form [formGroup]="filtersForm" (ngSubmit)="applyFilters()" class="filters-form">
+  <div class="filters-row">
+    <mat-form-field appearance="outline" class="filter-item">
+      <mat-label>Departamento</mat-label>
+      <mat-select formControlName="departmentCode" (selectionChange)="onDepartmentChange($event.value)">
+        <mat-option value="">Todos</mat-option>
+        <mat-option *ngFor="let dept of departments" [value]="dept.code">{{ dept.name }}</mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="filter-item">
+      <mat-label>Ciudad</mat-label>
+      <mat-select formControlName="cityCode">
+        <mat-option *ngFor="let city of cities" [value]="city.code">{{ city.name }}</mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="filter-item">
+      <mat-label>Tipo</mat-label>
+      <input matInput formControlName="type" placeholder="Ej: Computador" />
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="filter-item">
+      <mat-label>Fecha de compra</mat-label>
+      <input matInput [matDatepicker]="picker" formControlName="purchaseDate" placeholder="Fecha de compra" />
+      <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+      <mat-datepicker #picker></mat-datepicker>
+    </mat-form-field>
+
+  </div>
+
+  <div class="filter-actions">
+    <button mat-raised-button color="primary" type="submit">Buscar</button>
+    <button mat-stroked-button type="button" (click)="clearFilters()">Limpiar</button>
+  </div>
+</form>
