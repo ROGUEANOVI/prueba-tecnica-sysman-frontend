@@ -4,16 +4,6 @@
   border-radius: 16px;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
 
-  .table-controls {
-    display: flex;
-    justify-content: flex-end;
-    margin-bottom: 1rem;
-
-    .search-bar {
-      width: 300px;
-    }
-  }
-
   .mat-elevation-z8 {
     box-shadow: none;
   }
@@ -32,12 +22,19 @@
 
   td.mat-cell {
     font-size: 14px;
+
   }
 
   tr.mat-row:nth-child(even) {
     background-color: #fafafa;
   }
 
-
+  .no-data-row {
+    text-align: center;
+    font-style: italic;
+    padding: 1.5rem 0;
+    border-top: 1px solid #e0e0e0;
+  }
 }
+
 

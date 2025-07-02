@@ -7,13 +7,15 @@ import { MaterialTableComponent } from './components/material-table/material-tab
 import { MaterialUiModule } from 'src/app/material-ui/material-ui.module';
 import { MaterialFormDialogComponent } from './components/material-form-dialog/material-form-dialog.component';
 import { ReactiveFormsModule } from '@angular/forms';
+import { MaterialFiltersComponent } from './components/material-filters/material-filters.component';
 
 
 @NgModule({
   declarations: [
     MaterialListComponent,
     MaterialTableComponent,
-    MaterialFormDialogComponent
+    MaterialFormDialogComponent,
+    MaterialFiltersComponent
   ],
   imports: [
     CommonModule,
