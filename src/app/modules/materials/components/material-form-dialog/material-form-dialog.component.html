@@ -1,20 +1,76 @@
-<h1 mat-dialog-title>Registrar Material</h1>
+<h1 mat-dialog-title>{{ titleFormDialog }}</h1>
 <div mat-dialog-content>
   <form [formGroup]="materialForm">
     <mat-form-field appearance="fill" class="full-width">
       <mat-label>Nombre</mat-label>
       <input matInput formControlName="name" placeholder="Material" />
+      <mat-error *ngIf="materialForm.get('name')?.hasError('required')">
+        El nombre es obligatorio
+      </mat-error>
+    </mat-form-field>
+
+    <mat-form-field appearance="fill" class="full-width">
+      <mat-label>Descripción</mat-label>
+      <textarea
+        matInput
+        formControlName="description"
+        placeholder="Agrega una descripción detallada del material"
+        rows="4"
+      >
+      </textarea>
+
+      <mat-error *ngIf="materialForm.get('description')?.hasError('maxlength')">
+        Máximo 200 caracteres permitidos
+      </mat-error>
     </mat-form-field>
 
     <mat-form-field appearance="fill" class="full-width">
       <mat-label>Tipo</mat-label>
-      <input matInput formControlName="type"  placeholder="Tipo"/>
+      <input matInput formControlName="type" placeholder="Tipo" />
+    </mat-form-field>
+
+    <mat-form-field appearance="fill" class="full-width">
+      <mat-label>Precio</mat-label>
+      <input
+        type="number"
+        matInput
+        formControlName="price"
+        min="0"
+        placeholder="Precio"
+      />
+    </mat-form-field>
+
+    <mat-form-field appearance="fill" class="full-width">
+      <mat-label>Estado</mat-label>
+      <mat-select
+        formControlName="status"
+        (selectionChange)="onDepartmentChange($event.value)"
+      >
+        <mat-option *ngFor="let status of statusList" [value]="status">
+          {{ status }}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <mat-form-field appearance="fill" class="full-width">
+      <mat-label>Departamento</mat-label>
+      <mat-select
+        formControlName="departmentCode"
+        (selectionChange)="onDepartmentChange($event.value)"
+      >
+        <mat-option
+          *ngFor="let department of departments"
+          [value]="department.code"
+        >
+          {{ department.name }}
+        </mat-option>
+      </mat-select>
     </mat-form-field>
 
     <mat-form-field appearance="fill" class="full-width">
       <mat-label>Ciudad</mat-label>
-      <mat-select formControlName="cityId">
-        <mat-option *ngFor="let city of data.cities" [value]="city.id" >
+      <mat-select formControlName="cityCode">
+        <mat-option *ngFor="let city of cities" [value]="city.code">
           {{ city.name }}
         </mat-option>
       </mat-select>
@@ -22,21 +78,42 @@
 
     <mat-form-field appearance="fill" class="full-width">
       <mat-label>Fecha de compra</mat-label>
-      <input matInput [matDatepicker]="picker1" formControlName="purchaseDate" placeholder="Fecha de compra"/>
+      <input
+        matInput
+        [matDatepicker]="picker1"
+        formControlName="purchaseDate"
+        placeholder="Fecha de compra"
+      />
       <mat-datepicker-toggle matSuffix [for]="picker1"></mat-datepicker-toggle>
       <mat-datepicker #picker1></mat-datepicker>
     </mat-form-field>
 
     <mat-form-field appearance="fill" class="full-width">
       <mat-label>Fecha de venta</mat-label>
-      <input matInput [matDatepicker]="picker2" formControlName="saleDate" placeholder="Fecha de venta"/>
+      <input
+        matInput
+        [matDatepicker]="picker2"
+        formControlName="saleDate"
+        placeholder="Fecha de venta"
+      />
       <mat-datepicker-toggle matSuffix [for]="picker2"></mat-datepicker-toggle>
       <mat-datepicker #picker2></mat-datepicker>
     </mat-form-field>
+
+    <mat-error *ngIf="materialForm.hasError('invalidDateRange')">
+      La fecha de compra debe ser anterior o igual a la fecha de venta.
+    </mat-error>
   </form>
 </div>
 
 <div mat-dialog-actions align="end">
+  <button
+    mat-flat-button
+    color="primary"
+    [disabled]="!materialForm.valid"
+    (click)="onSubmit()"
+  >
+    {{ confirmationButtonText }}
+  </button>
   <button mat-button (click)="onCancel()">Cancelar</button>
-  <button mat-flat-button color="primary" [disabled]="!materialForm.valid" (click)="onSubmit()">Guardar</button>
 </div>
