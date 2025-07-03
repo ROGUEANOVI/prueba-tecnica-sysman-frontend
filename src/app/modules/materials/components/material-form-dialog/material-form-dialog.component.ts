@@ -127,12 +127,12 @@ export class MaterialFormDialogComponent implements OnInit {
           });
 
         },
-        error: (err: HttpErrorResponse) => {
-          console.error(err);
+        error: (error: HttpErrorResponse) => {
+          console.error(error);
           Swal.fire({
             icon: 'error',
             title: 'Error al actualizar el material',
-            text: err?.message || 'Ocurrio un error inesperado',
+            text: error?.error?.message || 'Ocurrio un error inesperado',
           })
         },
       })
@@ -148,12 +148,12 @@ export class MaterialFormDialogComponent implements OnInit {
             confirmButtonText: 'OK',
           });
         },
-        error: (err: HttpErrorResponse) => {
-          console.error(err);
+        error: (error: HttpErrorResponse) => {
+          console.error(error);
           Swal.fire({
             icon: 'error',
             title: 'Error al actualizar el material',
-            text: err?.message || 'Ocurrio un error inesperado',
+            text: error?.error?.message || 'Ocurrio un error inesperado',
           });
         },
       });

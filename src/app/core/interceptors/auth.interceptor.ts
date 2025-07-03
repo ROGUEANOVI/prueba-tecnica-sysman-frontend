@@ -3,33 +3,46 @@ import {
   HttpRequest,
   HttpHandler,
   HttpEvent,
-  HttpInterceptor
+  HttpInterceptor,
+  HttpErrorResponse,
 } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { catchError, Observable, throwError } from 'rxjs';
+import { AuthService } from '../services/auth.service';
+import { Router } from '@angular/router';
 
 @Injectable()
 export class AuthInterceptor implements HttpInterceptor {
 
-  private readonly excludedUrls = ['/auth/login', '/auth/register'];
+  constructor(private authService: AuthService, private router: Router) {}
 
-  intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
-    const isExcluded = this.excludedUrls.some(url => request.url.includes(url));
+  intercept(
+    req: HttpRequest<any>,
+    next: HttpHandler
+  ): Observable<HttpEvent<any>> {
+    const token = this.authService.getToken();
 
-    if (isExcluded) {
-      return next.handle(request);
-    }
+    const isAuthRequest = req.url.includes('/auth/login') || req.url.includes('/auth/register');
 
-    const token = localStorage.getItem('token');
-
-    if (token) {
-      const clonedRequest = request.clone({
+    if (token && !isAuthRequest) {
+      req = req.clone({
         setHeaders: {
           Authorization: `Bearer ${token}`,
         },
       });
-      return next.handle(clonedRequest);
     }
 
-    return next.handle(request);
+    return next.handle(req).pipe(
+      catchError((error: HttpErrorResponse) => {
+        if (error.status === 401) {
+          const message = error?.error?.message || '';
+
+          if (message.includes('expirado') || message.includes('expired')) {
+            this.authService.logout();
+            this.router.navigate(['/auth/login']);
+          }
+        }
+        return throwError(() => error);
+      })
+    );
   }
 }

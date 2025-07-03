@@ -7,7 +7,7 @@
           Visualiza, filtra y gestiona los materiales registrados.
         </p>
       </div>
-      <button mat-raised-button color="primary" (click)="openRegisterDialog()">
+      <button *ngIf="isAdmin" mat-raised-button color="primary" (click)="openRegisterDialog()">
         <mat-icon>add</mat-icon>
         Registrar Material
       </button>

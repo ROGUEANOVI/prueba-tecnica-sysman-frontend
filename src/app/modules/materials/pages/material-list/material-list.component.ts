@@ -7,6 +7,7 @@ import { MaterialService } from 'src/app/core/services/material.service';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { MaterialFormDialogComponent } from '../../components/material-form-dialog/material-form-dialog.component';
 import Swal from 'sweetalert2';
+import { AuthService } from 'src/app/core/services/auth.service';
 
 @Component({
   selector: 'app-material-list',
@@ -29,6 +30,7 @@ export class MaterialListComponent implements OnInit {
 
   constructor(
     private materialService: MaterialService,
+    private authService: AuthService,
     private dialog: MatDialog
   ) {}
 
@@ -43,9 +45,9 @@ export class MaterialListComponent implements OnInit {
         this.dataSource.paginator = this.paginator;
       },
       error: (error: HttpErrorResponse) => {
-        console.log(error?.message || 'Correo o contraseña incorrectos');
+        console.log(error?.error?.message || 'Ocurrio un error inesperado');
       },
-    }); 
+    });
   }
 
   applyFilters(filters: any): void {
@@ -56,11 +58,12 @@ export class MaterialListComponent implements OnInit {
 
     this.materialService.searchMaterials(type, cityCode, dateString).subscribe({
       next: (materials) => {
-        console.log('materials', materials);
         this.dataSource.data = materials;
         this.dataSource.paginator = this.paginator;
       },
-      error: (err) => console.error(err),
+      error: (error: HttpErrorResponse) => {
+        console.log(error?.error?.message || 'Ocurrio un error inesperado');
+      },
     });
   }
 
@@ -116,7 +119,14 @@ export class MaterialListComponent implements OnInit {
             this.loadMaterials();
           },
           error: (error: HttpErrorResponse) => {
-            Swal.fire('Error', error?.message, 'error');
+            console.log(error?.error?.message || 'Ocurrio un error inesperado');
+            Swal.fire({
+              icon: 'error',
+              title: 'Error al eliminar el material',
+              text:
+                error?.error?.message ||
+                'Ocurrio un error inesperado. Intenta nuevamente.',
+            });
           },
         });
       }
@@ -131,5 +141,9 @@ export class MaterialListComponent implements OnInit {
         this.loadMaterials();
       }
     });
+  }
+
+  get isAdmin(): boolean {
+    return this.authService.isAdmin();
   }
 }
