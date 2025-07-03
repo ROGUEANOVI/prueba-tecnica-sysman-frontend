@@ -44,7 +44,7 @@ export class MaterialFiltersComponent {
       next: (departments: Department[]) => {
         this.departments = departments;
       },
-      error: (err: HttpErrorResponse) => console.error(err),
+      error: (error: HttpErrorResponse) => console.error(error),
     });
   }
 
@@ -53,7 +53,7 @@ export class MaterialFiltersComponent {
       next: (cities: City[]) => {
         this.cities = cities;
       },
-      error: (err: HttpErrorResponse) => console.error(err),
+      error: (error: HttpErrorResponse) => console.error(error),
     });
   }
 

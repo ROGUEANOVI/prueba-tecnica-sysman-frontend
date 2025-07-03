@@ -1,14 +1,22 @@
-import { Component, EventEmitter, Input, Output, ViewChild } from '@angular/core';
+import {
+  Component,
+  EventEmitter,
+  Input,
+  Output,
+  ViewChild,
+} from '@angular/core';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatTableDataSource } from '@angular/material/table';
 import { MaterialResponse } from 'src/app/core/models/materials/material-response.model';
+import { AuthService } from 'src/app/core/services/auth.service';
+import { OnInit } from '@angular/core';
 
 @Component({
   selector: 'app-material-table',
   templateUrl: './material-table.component.html',
   styleUrls: ['./material-table.component.scss'],
 })
-export class MaterialTableComponent {
+export class MaterialTableComponent  implements OnInit {
   @Input() set materials(value: MaterialResponse[]) {
     this.dataSource.data = value;
   }
@@ -26,11 +34,20 @@ export class MaterialTableComponent {
     'city',
     'purchaseDate',
     'saleDate',
-    'actions',
   ];
   dataSource = new MatTableDataSource<MaterialResponse>();
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
+
+
+  constructor(private authService: AuthService) {}
+
+
+  ngOnInit(): void {
+    if(this.authService.isAdmin()) {
+      this.displayedColumns.push('actions');
+    }
+  }
 
   ngAfterViewInit(): void {
     this.dataSource.paginator = this.paginator;
@@ -49,5 +66,9 @@ export class MaterialTableComponent {
 
   deleteMaterial(id: number) {
     this.onDelete.emit(id);
+  }
+
+  get isAdmin(): boolean {
+    return this.authService.isAdmin();
   }
 }
