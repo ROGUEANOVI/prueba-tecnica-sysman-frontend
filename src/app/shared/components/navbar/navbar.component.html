@@ -1,0 +1,14 @@
+<mat-toolbar color="primary" class="navbar">
+  <span class="app-title">Sysman</span>
+
+  <span class="spacer"></span>
+
+  <ng-container *ngIf="isLoggedIn(); else showLogin">
+    <span class="user-email">{{ getUserEmail() }}</span>
+    <button mat-button (click)="logout()">Cerrar sesión</button>
+  </ng-container>
+
+  <ng-template #showLogin>
+    <button mat-button [routerLink]="['/auth/login']">Iniciar sesión</button>
+  </ng-template>
+</mat-toolbar>
