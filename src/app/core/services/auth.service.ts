@@ -65,6 +65,17 @@ export class AuthService {
     }
   }
 
+  getUserEmail(): string | null {
+    const token = this.getToken();
+    if (!token) return null;
+
+    const payload = JSON.parse(atob(token.split('.')[1]));
+    const email = payload.sub || null;
+    const username = email.split('@')[0] || null;
+
+    return username.toUpperCase();
+  }
+
   isAdmin(): boolean {
     return this.getUserRole() === 'ROLE_ADMIN';
   }

@@ -1,0 +1,19 @@
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 1rem;
+
+  .app-title {
+    font-weight: bold;
+    font-size: 1.2rem;
+  }
+
+  .spacer {
+    flex: 1;
+  }
+
+  .user-email {
+    margin-right: 1rem;
+  }
+}
